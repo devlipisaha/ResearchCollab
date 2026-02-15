@@ -1,0 +1,776 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ResearchCollab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+
+        /* Header Navigation - SAME AS OTHER PAGES */
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 36px;
+            height: 36px;
+        }
+
+        .logo span {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        nav {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        nav a {
+            color: #666;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #0D8ABC;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border-radius: 24px;
+            cursor: pointer;
+        }
+
+        .user-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0D8ABC 0%, #FF6B2C 100%);
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 40px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .card-link {
+            font-size: 14px;
+            color: #0D8ABC;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .card-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Profile Stats */
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0D8ABC 0%, #FF6B2C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #0D8ABC 0%, #FF6B2C 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: white;
+        }
+
+        .activity-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .activity-content p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        /* Connection Requests */
+        .request-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .request-item {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .request-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0D8ABC 0%, #FF6B2C 100%);
+            flex-shrink: 0;
+        }
+
+        .request-info {
+            flex: 1;
+        }
+
+        .request-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .request-info p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-accept {
+            padding: 8px 16px;
+            background: #0D8ABC;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-decline {
+            padding: 8px 16px;
+            background: white;
+            color: #666;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .action-btn {
+            padding: 16px;
+            background: #f8f8f8;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .action-btn:hover {
+            background: #0D8ABC;
+            color: white;
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Messages Preview */
+        .message-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .message-item:hover {
+            background: #e5e5e5;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0D8ABC 0%, #FF6B2C 100%);
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .message-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .message-preview {
+            font-size: 13px;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Footer - SAME AS OTHER PAGES */
+        footer {
+            background: #1a1a1a;
+            color: #999;
+            padding: 60px 40px 30px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .footer-brand img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .footer-brand span {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .footer-col h4 {
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-col a {
+            display: block;
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 12px;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: #0D8ABC;
+        }
+
+        .footer-bottom {
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav a:not(.user-menu) {
+                display: none;
+            }
+
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 10C32.4 10 10 32.4 10 60C10 73.8 16.2 86.1 25.8 94.2C35.4 86.1 45 73.8 45 60C45 46.2 35.4 33.9 25.8 25.8C35.4 17.7 47.7 10 60 10Z' fill='%230D8ABC'/%3E%3Cpath d='M60 110C87.6 110 110 87.6 110 60C110 46.2 103.8 33.9 94.2 25.8C84.6 33.9 75 46.2 75 60C75 73.8 84.6 86.1 94.2 94.2C84.6 102.3 72.3 110 60 110Z' fill='%23FF6B2C'/%3E%3Ccircle cx='60' cy='60' r='15' fill='url(%23gradient)'/%3E%3Cdefs%3E%3ClinearGradient id='gradient' x1='45' y1='45' x2='75' y2='75'%3E%3Cstop offset='0%25' stop-color='%230D8ABC'/%3E%3Cstop offset='100%25' stop-color='%23FF6B2C'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E" alt="ResearchCollab">
+                <span>ResearchCollab</span>
+            </a>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="search.html">Search</a>
+                <a href="dashboard.html" class="active">Dashboard</a>
+                <div class="user-menu">
+                    <div class="user-avatar-small"></div>
+                    <span class="user-name">John Doe</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="page-header">
+            <h1>Welcome back, John!</h1>
+            <p>Here's what's happening with your research network</p>
+        </div>
+
+        <!-- Profile Stats -->
+        <div class="profile-stats">
+            <div class="stat-card">
+                <div class="stat-number">324</div>
+                <div class="stat-label">Profile Views</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">156</div>
+                <div class="stat-label">Connections</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">New Requests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Messages</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Column -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Activity</h3>
+                        <a href="#" class="card-link">View All</a>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke-width="2"/>
+                                    <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div class="activity-content">
+                                <h4>New connection accepted</h4>
+                                <p>Dr. Sarah Chen accepted your connection request</p>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                    <path d="M12 6V12L16 14" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="activity-content">
+                                <h4>Profile viewed</h4>
+                                <p>45 researchers viewed your profile this week</p>
+                                <div class="activity-time">1 day ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <div class="activity-content">
+                                <h4>New message</h4>
+                                <p>Prof. Marcus Johnson sent you a message</p>
+                                <div class="activity-time">2 days ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Quick Actions</h3>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="location.href='search.html'">
+                            <div class="action-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D8ABC">
+                                    <circle cx="11" cy="11" r="8" stroke-width="2"/>
+                                    <path d="M21 21L16.65 16.65" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <span>Find Researchers</span>
+                        </button>
+                        <button class="action-btn">
+                            <div class="action-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D8ABC">
+                                    <path d="M12 5V19M5 12H19" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <span>Create Project</span>
+                        </button>
+                        <button class="action-btn">
+                            <div class="action-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D8ABC">
+                                    <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke-width="2"/>
+                                    <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <span>Edit Profile</span>
+                        </button>
+                        <button class="action-btn">
+                            <div class="action-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D8ABC">
+                                    <path d="M20 7H4C2.89543 7 2 7.89543 2 9V19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19V9C22 7.89543 21.1046 7 20 7Z" stroke-width="2"/>
+                                    <path d="M16 21V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 4.46957 8 5V21" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <span>Add Publication</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Connection Requests -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Connection Requests</h3>
+                        <a href="#" class="card-link">View All</a>
+                    </div>
+                    <div class="request-list">
+                        <div class="request-item">
+                            <div class="request-avatar"></div>
+                            <div class="request-info">
+                                <h4>Dr. Emily Zhang</h4>
+                                <p>Stanford University</p>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn-accept">Accept</button>
+                                <button class="btn-decline">Decline</button>
+                            </div>
+                        </div>
+                        <div class="request-item">
+                            <div class="request-avatar"></div>
+                            <div class="request-info">
+                                <h4>Prof. David Kim</h4>
+                                <p>MIT</p>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn-accept">Accept</button>
+                                <button class="btn-decline">Decline</button>
+                            </div>
+                        </div>
+                        <div class="request-item">
+                            <div class="request-avatar"></div>
+                            <div class="request-info">
+                                <h4>Dr. Lisa Anderson</h4>
+                                <p>Oxford University</p>
+                            </div>
+                            <div class="request-actions">
+                                <button class="btn-accept">Accept</button>
+                                <button class="btn-decline">Decline</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Messages -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Messages</h3>
+                        <a href="#" class="card-link">View All</a>
+                    </div>
+                    <div class="message-list">
+                        <div class="message-item">
+                            <div class="message-avatar"></div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="message-name">Dr. Sarah Chen</span>
+                                    <span class="message-time">2h ago</span>
+                                </div>
+                                <div class="message-preview">Thanks for connecting! I'd love to discuss...</div>
+                            </div>
+                        </div>
+                        <div class="message-item">
+                            <div class="message-avatar"></div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="message-name">Prof. Marcus Johnson</span>
+                                    <span class="message-time">1d ago</span>
+                                </div>
+                                <div class="message-preview">Your recent paper on quantum computing was...</div>
+                            </div>
+                        </div>
+                        <div class="message-item">
+                            <div class="message-avatar"></div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="message-name">Dr. Elena Rodriguez</span>
+                                    <span class="message-time">2d ago</span>
+                                </div>
+                                <div class="message-preview">Would you be interested in collaborating on...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand">
+                        <img src="data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M60 10C32.4 10 10 32.4 10 60C10 73.8 16.2 86.1 25.8 94.2C35.4 86.1 45 73.8 45 60C45 46.2 35.4 33.9 25.8 25.8C35.4 17.7 47.7 10 60 10Z' fill='%230D8ABC'/%3E%3Cpath d='M60 110C87.6 110 110 87.6 110 60C110 46.2 103.8 33.9 94.2 25.8C84.6 33.9 75 46.2 75 60C75 73.8 84.6 86.1 94.2 94.2C84.6 102.3 72.3 110 60 110Z' fill='%23FF6B2C'/%3E%3Ccircle cx='60' cy='60' r='15' fill='url(%23gradient2)'/%3E%3Cdefs%3E%3ClinearGradient id='gradient2' x1='45' y1='45' x2='75' y2='75'%3E%3Cstop offset='0%25' stop-color='%230D8ABC'/%3E%3Cstop offset='100%25' stop-color='%23FF6B2C'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E" alt="ResearchCollab">
+                        <span>ResearchCollab</span>
+                    </div>
+                    <p style="color: #999; font-size: 14px; line-height: 1.6;">Connecting researchers worldwide to advance knowledge and innovation.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <a href="search.html">Search</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="#">Features</a>
+                    <a href="#">Pricing</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <a href="#">Help Center</a>
+                    <a href="#">Documentation</a>
+                    <a href="#">API</a>
+                    <a href="#">Blog</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="#">About</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Contact</a>
+                    <a href="#">Press</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 ResearchCollab. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
